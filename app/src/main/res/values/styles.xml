@@ -1,0 +1,40 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="texto" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textSize">21sp</item>
+    </style>
+
+    <style name="boton" parent="@android:style/Widget.Button.Small">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:background">@drawable/button_bg</item>
+        <item name="android:textColor">@color/colorButtonText</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:radius">15dp</item>
+        <item name="android:textStyle">bold</item>
+
+    </style>
+    <style name="boton.facebook">
+        <item name="android:background">@drawable/bg_faceebook</item>
+    </style>
+    <style name="boton.google">
+        <item name="android:background">@drawable/bg_google</item>
+
+    </style>
+
+</resources>

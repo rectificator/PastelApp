@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FFF7F0</color>
+    <color name="colorPrimaryDark">#95586F</color>
+    <color name="colorAccent">#95586F</color>
+    <color name="colorPrimaryText">#000000</color>
+    <color name="colorSecondaryText">#B1B1B1</color>
+    <color name="colorButtonText">#FFFFFF</color>
+    <color name="colorProgressBar">#13CE66</color>
+    <color name="colorCardBG">#EFF2F7</color>
+    <color name="colorFacebook">#3B5998</color>
+    <color name="colorGoogle">#4885ED</color>
+</resources>
