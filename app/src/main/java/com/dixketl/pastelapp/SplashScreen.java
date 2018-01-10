@@ -267,66 +267,57 @@ public class SplashScreen extends AppCompatActivity implements View.OnClickListe
     }
 
     private void misPedidos(){
-        setContentView(R.layout.ec_mis_pedidos);
-        tabs = findViewById(R.id.tabs);
-        container = findViewById(R.id.tabContainer);
+
         new Thread(new Runnable() {
             @Override
             public void run() {
+                runOnUiThread(new Runnable() {
 
-                try{
-                    Thread.sleep(1000);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try{
-                                enCurso.setArguments(getIntent().getExtras());
-                                transaction = manager.beginTransaction();
-                                transaction.replace(container.getId(),enCurso);
-                                transaction.addToBackStack(null);
-                                transaction.commit();
-                            }catch (Exception ex){
-                                ex.printStackTrace();
-                            }
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(100);
+                            setContentView(R.layout.ec_mis_pedidos);
+                            tabs = findViewById(R.id.tabs);
+                            container = findViewById(R.id.tabContainer);
+
+                            container.setOnTouchListener(SplashScreen.this);
+                            tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                                @Override
+                                public void onTabSelected(TabLayout.Tab tab) {
+                                    if (tab == tabs.getTabAt(0)){
+                                        container.removeAllViews();
+                                        container.inflate(SplashScreen.this,R.layout.mp_en_curso,container);
+                                    }
+                                    else if (tab == tabs.getTabAt(1)){
+                                        container.removeAllViews();
+                                        container.inflate(SplashScreen.this,R.layout.mp_pasados,container);
+                                    }
+                                }
+
+                                @Override
+                                public void onTabUnselected(TabLayout.Tab tab) {
+
+                                }
+
+                                @Override
+                                public void onTabReselected(TabLayout.Tab tab) {
+
+                                }
+                            });
+                            container.removeAllViews();
+                            container.inflate(SplashScreen.this,R.layout.mp_en_curso,container);
+
+
+                        }catch (Exception e){
+                            e.printStackTrace();
                         }
-                    });
-
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
+                    }
+                });
             }
         }).start();
 
-        container.setOnTouchListener(this);
-        tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                if (tab == tabs.getTabAt(0)){
-                    transaction = getFragmentManager().beginTransaction();
-                    transaction.replace(container.getId(),enCurso);
-                    transaction.addToBackStack(null);
-                    transaction.commit();
-                }
-                else if (tab == tabs.getTabAt(1)){
-                    transaction = getFragmentManager().beginTransaction();
-                    transaction.replace(container.getId(),Pasados);
-                    transaction.addToBackStack(null);
-                    transaction.commit();
-                }
-            }
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
-        tabs.performClick();
     }
 
     private void changeTab(){
@@ -334,16 +325,14 @@ public class SplashScreen extends AppCompatActivity implements View.OnClickListe
         Pasados = new Pasados();
         try {
             if (tabs.getTabAt(0).isSelected()){
-                transaction = getFragmentManager().beginTransaction();
-                transaction.replace(container.getId(),enCurso);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                container.removeAllViews();
+                container.inflate(SplashScreen.this,R.layout.mp_en_curso,container);
+
             }
             else if (tabs.getTabAt(1).isSelected()){
-                transaction = getFragmentManager().beginTransaction();
-                transaction.replace(container.getId(),Pasados);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                container.removeAllViews();
+                container.inflate(SplashScreen.this,R.layout.mp_pasados,container);
+
             }
         }catch (Exception e){
             e.printStackTrace();

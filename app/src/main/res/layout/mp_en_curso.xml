@@ -12,6 +12,7 @@
         android:text="En curso"
         style="@style/texto"
         android:textColor="@color/colorButtonText"
-        android:gravity="center"/>
+        android:gravity="center"
+        />
 
 </LinearLayout>
