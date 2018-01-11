@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="5dp"
+    app:contentPadding="21dp"
+    android:maxWidth="500dp"
+    android:maxHeight="300dp"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/ec_imagen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:contentDescription="Imagen del pastel"
+            app:srcCompat="@drawable/pastel3" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical|center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/ec_nombre"
+                style="@style/texto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                tools:text="nombre" />
+
+            <TextView
+                android:id="@+id/ec_descripcion"
+                style="@style/texto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                tools:text="descripcion" />
+
+            <TextView
+                android:id="@+id/ec_fechaPedido"
+                style="@style/texto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                tools:text="fechaPedido" />
+
+            <TextView
+                android:id="@+id/ec_estatus"
+                style="@style/texto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                tools:text="estatus" />
+
+            <ProgressBar
+                android:id="@+id/ec_progressBar"
+                style="@style/progreso" />
+
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>

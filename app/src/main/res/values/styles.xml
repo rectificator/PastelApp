@@ -37,4 +37,11 @@
 
     </style>
 
+    <style name="progreso" parent="Base.Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:strokeWidth">21dp</item>
+        <item name="android:strokeColor">@color/colorProgressBar</item>
+    </style>
+
 </resources>
