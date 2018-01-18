@@ -1,6 +1,7 @@
 package com.dixketl.pastelapp;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -12,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -98,12 +100,14 @@ public class MapsActivity extends AppCompatActivity
     private double Latitud;
 
     //Marcador
-    Marker mark;
+    private Marker mark;
 
+    private String pantalla;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        pantalla = getIntent().getStringExtra("pantalla");
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
@@ -123,6 +127,8 @@ public class MapsActivity extends AppCompatActivity
                 .enableAutoManage(this, this)
                 .build();
 
+        //Boton de retorno a la actividad principal
+        Button confirmar = findViewById(R.id.confirmar);
 
         // Construct a GeoDataClient.
         mGeoDataClient = Places.getGeoDataClient(this, null);
@@ -141,6 +147,18 @@ public class MapsActivity extends AppCompatActivity
         //Obteniendo el fragmento de autocompletado que se usará con google places
         autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+        confirmar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent ssa = new Intent(MapsActivity.this,SplashScreen.class);
+                ssa.putExtra("pantalla",pantalla);
+                ssa.putExtra("latitud",Latitud);
+                ssa.putExtra("longitud",Longitud);
+                ssa.putExtra("lugar",mark.getTitle() + "," + mark.getSnippet());
+                startActivity(ssa);
+            }
+        });
 
     }
 

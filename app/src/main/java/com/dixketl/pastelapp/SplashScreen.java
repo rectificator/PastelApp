@@ -3,6 +3,7 @@ package com.dixketl.pastelapp;
 import android.Manifest;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -43,6 +44,7 @@ public class SplashScreen extends AppCompatActivity implements View.OnClickListe
     private Button btnElije;
     private Button btnCrea;
     private Button btnPedidos;
+    private Button btnPedidosEsp;
 
     private GridView gridView;
     private GridView pan;
@@ -74,12 +76,23 @@ public class SplashScreen extends AppCompatActivity implements View.OnClickListe
     private android.support.v4.app.FragmentManager manager;
     private android.support.v4.app.FragmentTransaction transaction;
 
+    //Strings de transicion
+    String pantalla;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.a_splash_screen);
-        base = findViewById(R.id.splashPrincipal);
+        pantalla = getIntent().getStringExtra("pantalla");
+        if (pantalla.equals("elije")){
+            elijePastel();
+        }else if (pantalla.equals("crea")){
+            creaPastel();
+        }else if (pantalla.equals("pedido_especial")){
+            pedidoEspecial();
+        }else {
+            setContentView(R.layout.a_splash_screen);
+            base = findViewById(R.id.splashPrincipal);
+        }
         manager = getSupportFragmentManager();
         tabFragment = new ArrayList<>();
         tabFragment.add(new EnCurso());
@@ -195,10 +208,21 @@ public class SplashScreen extends AppCompatActivity implements View.OnClickListe
             principal();
         }
         if (v==btnElije){
-            elijePastel();
+            Intent mapa = new Intent(SplashScreen.this,MapsActivity.class);
+            mapa.putExtra("pantalla","elije");
+            startActivity(mapa);
+
         }
         if (v==btnCrea){
-            creaPastel();
+            Intent mapa = new Intent(SplashScreen.this,MapsActivity.class);
+            mapa.putExtra("pantalla","crea");
+            startActivity(mapa);
+
+        }
+        if (v==btnPedidosEsp){
+            Intent mapa = new Intent(SplashScreen.this,MapsActivity.class);
+            mapa.putExtra("pantalla","pedido_especial");
+            startActivity(mapa);
         }
         if (v==btnPedidos){
             misPedidos();
@@ -281,6 +305,10 @@ public class SplashScreen extends AppCompatActivity implements View.OnClickListe
         relleno.getLayoutParams().width = relleno.getCount() * 520;
         cubierta.getLayoutParams().width = cubierta.getCount() * 520;
 
+    }
+
+    private void pedidoEspecial(){
+        setContentView(R.layout.ed_pedido_especial);
     }
 
     private void misPedidos(){
