@@ -1,17 +1,19 @@
 package com.dixketl.pastelapp;
 
 import android.Manifest;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,13 +24,16 @@ import android.widget.Toast;
 
 import com.dixketl.pastelapp.fragment.EnCurso;
 import com.dixketl.pastelapp.fragment.Pasados;
+import com.dixketl.pastelapp.fragment.Proximos;
+import com.dixketl.pastelapp.vistas.LinearContainer;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.dixketl.pastelapp.Utilitaria.chFragment;
 import static com.dixketl.pastelapp.Utilitaria.solicitarPermiso;
 
-public class SplashScreen extends AppCompatActivity implements View.OnClickListener,AdapterView.OnItemClickListener,View.OnTouchListener {
+public class SplashScreen extends AppCompatActivity implements View.OnClickListener,AdapterView.OnItemClickListener {
 
     public static int REQUEST_WRITE_EXTERNAL_STORAGE = 0;
     private Button ok;
@@ -45,29 +50,41 @@ public class SplashScreen extends AppCompatActivity implements View.OnClickListe
     private GridView cubierta;
 
     public LinearLayout base;
-    public NestedScrollView container;
+    public LinearLayout container;
+    public LinearContainer containerS;
     public TabLayout tabs;
+
 
     private List<String> panList;
     private List<String> rellenoList;
     private List<String> cubiertaList;
 
+    private ArrayList<Fragment> tabFragment;
+
     private int panSize;
     private int rellenoSize;
     private int cubiertaSize;
+    private int fragmentPos = 0;
 
-    public FragmentTransaction transaction;
-    private Fragment enCurso;
-    private Fragment Pasados;
+    /*private float dX;
+    private float dY;
+    private float X;
+    private float Y;*/
 
-    private FragmentManager manager;
+    private android.support.v4.app.FragmentManager manager;
+    private android.support.v4.app.FragmentTransaction transaction;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.a_splash_screen);
         base = findViewById(R.id.splashPrincipal);
-        manager = getFragmentManager();
+        manager = getSupportFragmentManager();
+        tabFragment = new ArrayList<>();
+        tabFragment.add(new EnCurso());
+        tabFragment.add(new Pasados());
+        tabFragment.add(new Proximos());
         permiso();
     }
 
@@ -280,18 +297,49 @@ public class SplashScreen extends AppCompatActivity implements View.OnClickListe
                             setContentView(R.layout.ec_mis_pedidos);
                             tabs = findViewById(R.id.tabs);
                             container = findViewById(R.id.tabContainer);
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                                    LinearLayout.LayoutParams.MATCH_PARENT,
+                                    LinearLayout.LayoutParams.WRAP_CONTENT);
+                            containerS = new LinearContainer(SplashScreen.this);
+                            containerS.setLayoutParams(params);
+                            containerS.setId(R.id.contenedorS);
+                            //containerS.setOnTouchListener(SplashScreen.this);
+                            container.addView(containerS);
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try{
+                                    Thread.sleep(100);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
 
-                            container.setOnTouchListener(SplashScreen.this);
+                                            transaction = manager.beginTransaction();
+                                            transaction.add(containerS.getId(),tabFragment.get(fragmentPos));
+                                            transaction.commitNow();
+
+                                        }
+                                    });
+                                    }catch (Exception e){e.printStackTrace();}
+                                }
+                            }).start();
                             tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                                 @Override
                                 public void onTabSelected(TabLayout.Tab tab) {
+
                                     if (tab == tabs.getTabAt(0)){
-                                        container.removeAllViews();
-                                        container.inflate(SplashScreen.this,R.layout.mp_en_curso,container);
+                                        fragmentPos = chFragment(tabFragment,fragmentPos,
+                                                containerS,manager,0);
+
                                     }
                                     else if (tab == tabs.getTabAt(1)){
-                                        container.removeAllViews();
-                                        container.inflate(SplashScreen.this,R.layout.mp_pasados,container);
+                                        fragmentPos = chFragment(tabFragment,fragmentPos,
+                                                containerS,manager,1);
+
+                                    }else if (tab == tabs.getTabAt(2)){
+                                        fragmentPos = chFragment(tabFragment,fragmentPos,
+                                                containerS,manager,2);
+
                                     }
                                 }
 
@@ -305,8 +353,8 @@ public class SplashScreen extends AppCompatActivity implements View.OnClickListe
 
                                 }
                             });
-                            container.removeAllViews();
-                            container.inflate(SplashScreen.this,R.layout.mp_en_curso,container);
+                            containerS.removeAllViews();
+
 
 
                         }catch (Exception e){
@@ -321,18 +369,17 @@ public class SplashScreen extends AppCompatActivity implements View.OnClickListe
     }
 
     private void changeTab(){
-        enCurso = new EnCurso();
-        Pasados = new Pasados();
         try {
             if (tabs.getTabAt(0).isSelected()){
-                container.removeAllViews();
-                container.inflate(SplashScreen.this,R.layout.mp_en_curso,container);
-
+                fragmentPos = chFragment(tabFragment,fragmentPos,
+                        containerS,manager,0);
             }
             else if (tabs.getTabAt(1).isSelected()){
-                container.removeAllViews();
-                container.inflate(SplashScreen.this,R.layout.mp_pasados,container);
-
+                fragmentPos = chFragment(tabFragment,fragmentPos,
+                        containerS,manager,0);
+            }else if (tabs.getTabAt(2).isSelected()){
+                fragmentPos = chFragment(tabFragment,fragmentPos,
+                        containerS,manager,0);
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -340,20 +387,55 @@ public class SplashScreen extends AppCompatActivity implements View.OnClickListe
 
     }
 
+/*
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         boolean value;
-        if (v==container){
-           switch (event.getAction()){
+        if (v==containerS){
+            v.performClick();
+            switch (event.getAction()){
                case MotionEvent.ACTION_DOWN:
-                   v.performClick();
+                   X = event.getRawX();
+
+                   Log.e("ABAJO", Float.toString(X));
                    value=true;
                    break;
                case MotionEvent.ACTION_MOVE:
                    value=true;
+                   dX = X-event.getRawX();
+                   if (dX<0){
+                       if (containerS.getChildCount()<2){
+                           transaction = manager.beginTransaction();
+                           transaction.add(containerS.getId(),tabFragment.get(fragmentPos+1));
+                           transaction.commitNow();
+                       }
+                       containerS.setX(event.getX());
+                   }else if (dX>0){
+                       if (containerS.getChildCount()<2){
+
+                           transaction = manager.beginTransaction();
+                           if (fragmentPos<2){
+                               transaction.remove(tabFragment.get(fragmentPos+1));
+                           }else if (fragmentPos==2){
+                               transaction.remove(tabFragment.get(fragmentPos));
+                           }
+                           transaction.commitNow();
+                           transaction = manager.beginTransaction();
+                           transaction.add(containerS.getId(),tabFragment.get(fragmentPos-1));
+                           transaction.commitNow();
+                           */
+/*transaction = manager.beginTransaction();
+                           transaction.add(containerS.getId(),tabFragment.get(fragmentPos));
+                           transaction.commitNow();*//*
+
+                       }
+                       Log.e("MOVE", Float.toString(dX));
+                       containerS.setX(v.getX());
+                   }
                    break;
                case MotionEvent.ACTION_UP:
                    changeTab();
+                   Log.e("ARRIBA", Float.toString(v.getX()));
                    value=true;
                    break;
                default:
@@ -364,7 +446,11 @@ public class SplashScreen extends AppCompatActivity implements View.OnClickListe
             value = false;
         }
         return value;
+
     }
+*/
+
+
 
 }
 

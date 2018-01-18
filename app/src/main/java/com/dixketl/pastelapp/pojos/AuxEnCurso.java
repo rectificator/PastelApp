@@ -1,5 +1,6 @@
 package com.dixketl.pastelapp.pojos;
 
+
 /**
  * Created by dgaco on 10/01/18.
  */
@@ -12,6 +13,8 @@ public class AuxEnCurso {
     private String descripcion;
     private String fechaPago;
     private String progreso;
+
+    public AuxEnCurso(){}
 
     public AuxEnCurso(String id,String imagen, String nombre, String descripcion, String fechaPago, String progreso){
 

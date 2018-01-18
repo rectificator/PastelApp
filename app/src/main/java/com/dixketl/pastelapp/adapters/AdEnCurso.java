@@ -1,6 +1,10 @@
 package com.dixketl.pastelapp.adapters;
 
-import android.os.AsyncTask;
+
+import android.graphics.PorterDuff;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,9 +25,15 @@ import java.util.ArrayList;
 
 public class AdEnCurso extends RecyclerView.Adapter<AdEnCurso.ViewHolder>{
 
-    ArrayList<AuxEnCurso> mListEnCurso;
-    ViewHolder holder;
-    View v;
+    private ArrayList<AuxEnCurso> mListEnCurso;
+    private ViewHolder holder;
+    private View v;
+    public static final String enProceso= "En proceso";
+    public static final String listo= "Listo";
+    public static final String enRuta = "En ruta";
+    public static final String visitado = "Domicilio visitado";
+    public static final String entregado = "Entregado :D";
+
 
     public AdEnCurso(ArrayList<AuxEnCurso> mListEnCurso){
         this.mListEnCurso = mListEnCurso;
@@ -50,15 +60,44 @@ public class AdEnCurso extends RecyclerView.Adapter<AdEnCurso.ViewHolder>{
             estatus = itemView.findViewById(R.id.ec_estatus);
             estatusBar = itemView.findViewById(R.id.ec_progressBar);
 
+
+
         }
 
         public void bind(AuxEnCurso a){
 
             nombre.setText(a.getNombre());
-            nombre.setText(a.getDescripcion());
-            nombre.setText(a.getFechaPago());
-            nombre.setText(a.getProgreso());
+            descripcion.setText(a.getDescripcion());
+            fechaPedido.setText(a.getFechaPago());
+            estatus.setText(a.getProgreso());
+            Drawable progresso = estatusBar.getProgressDrawable().mutate();
+            progresso.setColorFilter(ContextCompat.getColor(estatusBar.getContext(),R.color.colorProgressBar),
+                    PorterDuff.Mode.SRC_IN);
+            estatusBar.setProgressDrawable(progresso);
+            estatusBar.setScaleY(5);
 
+            switch (estatus.getText().toString()){
+                case enProceso:
+                    estatusBar.setProgress(3);
+                    break;
+
+                case listo:
+                    estatusBar.setProgress(38);
+                    break;
+
+                case enRuta:
+                    estatusBar.setProgress(70);
+                    break;
+                case visitado:
+                    estatusBar.setProgress(90);
+                    break;
+                case entregado:
+                    estatusBar.setProgress(100);
+                    break;
+                default:
+                    estatusBar.setProgress(0);
+                    break;
+            }
 
         }
     }
@@ -85,9 +124,7 @@ public class AdEnCurso extends RecyclerView.Adapter<AdEnCurso.ViewHolder>{
      */
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        v = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_card_en_curso,parent);
-
-
+        v = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_card_en_curso,parent,false);
         holder = new ViewHolder(v);
         return holder;
     }
@@ -126,41 +163,5 @@ public class AdEnCurso extends RecyclerView.Adapter<AdEnCurso.ViewHolder>{
     public int getItemCount() {
         return mListEnCurso.size();
     }
-
-    public class progresoActual extends AsyncTask<String,Void,Void>{
-
-        public int progreso;
-
-        @Override
-        protected Void doInBackground(String... strings) {
-
-            if (strings[0].equals("En proceso")){
-                progreso = 3;
-            }
-            else if (strings[0].equals("Listo")) {
-
-            }
-            else if (strings[0].equals("En ruta")) {
-
-            }
-            else if (strings[0].equals("Domicilio visitado")) {
-
-            }
-            else if (strings[0].equals("Entregado :D")) {
-
-            }
-            else {
-
-            }
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
-
-        }
-    }
-
 
 }

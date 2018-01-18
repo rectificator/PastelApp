@@ -39,6 +39,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="TextView"
+                android:fontFamily="@font/glacialindifference_bold"
+                android:textSize="20sp"
                 tools:text="nombre" />
 
             <TextView
@@ -47,6 +49,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="TextView"
+                android:textSize="18sp"
                 tools:text="descripcion" />
 
             <TextView
@@ -55,6 +58,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="TextView"
+                android:textSize="18sp"
                 tools:text="fechaPedido" />
 
             <TextView
@@ -63,11 +67,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="TextView"
+                android:fontFamily="@font/glacialindifference_bold"
+                android:textSize="20sp"
                 tools:text="estatus" />
 
             <ProgressBar
                 android:id="@+id/ec_progressBar"
-                style="@style/progreso" />
+                style="@style/progreso"
+
+                />
 
         </LinearLayout>
     </LinearLayout>
