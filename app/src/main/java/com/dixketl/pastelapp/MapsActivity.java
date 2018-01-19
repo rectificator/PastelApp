@@ -227,13 +227,17 @@ public class MapsActivity extends AppCompatActivity
                 locationButton.setLayoutParams(params);
             }
 
-            // Getting Current Location From GPS
-            Location location = lm.getLastKnownLocation(provider);
-            if(location!=null){
-                onLocationChanged(location);
-            }
+            try {
+                // Getting Current Location From GPS
+                Location location = lm.getLastKnownLocation(provider);
+                if(location!=null){
+                    onLocationChanged(location);
+                }
 
-            lm.requestLocationUpdates(provider, 20000, 0, this);
+                lm.requestLocationUpdates(provider, 20000, 0, this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             onMyLocationButtonClick();
 

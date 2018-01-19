@@ -10,12 +10,9 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.NestedScrollView;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -26,7 +23,7 @@ import android.widget.Toast;
 import com.dixketl.pastelapp.fragment.EnCurso;
 import com.dixketl.pastelapp.fragment.Pasados;
 import com.dixketl.pastelapp.fragment.Proximos;
-import com.dixketl.pastelapp.vistas.LinearContainer;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +50,6 @@ public class SplashScreen extends AppCompatActivity implements View.OnClickListe
 
     public LinearLayout base;
     public LinearLayout container;
-    public LinearContainer containerS;
     public TabLayout tabs;
 
 
@@ -77,28 +73,30 @@ public class SplashScreen extends AppCompatActivity implements View.OnClickListe
     private android.support.v4.app.FragmentTransaction transaction;
 
     //Strings de transicion
-    String pantalla;
+    String pantalla = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         pantalla = getIntent().getStringExtra("pantalla");
-        if (pantalla.equals("elije")){
-            elijePastel();
+        if (pantalla==null){
+            setContentView(R.layout.a_splash_screen);
+            base = findViewById(R.id.splashPrincipal);
+            permiso();
+
         }else if (pantalla.equals("crea")){
             creaPastel();
         }else if (pantalla.equals("pedido_especial")){
             pedidoEspecial();
-        }else {
-            setContentView(R.layout.a_splash_screen);
-            base = findViewById(R.id.splashPrincipal);
+        }else if (pantalla.equals("elije")){
+            elijePastel();
         }
         manager = getSupportFragmentManager();
         tabFragment = new ArrayList<>();
         tabFragment.add(new EnCurso());
         tabFragment.add(new Pasados());
         tabFragment.add(new Proximos());
-        permiso();
+
     }
 
     @Override
@@ -112,14 +110,18 @@ public class SplashScreen extends AppCompatActivity implements View.OnClickListe
     private void splash() {
         new Thread() {
             public void run() {
-
                 try {
+                    Thread.sleep(1000);
                     runOnUiThread(new Runnable() {
 
                         @Override
                         public void run() {
-                            base.setBackgroundColor(ContextCompat.
-                                    getColor(SplashScreen.this, R.color.colorPrimary));
+                            try {
+                                base.setBackgroundColor(ContextCompat.
+                                        getColor(SplashScreen.this, R.color.colorPrimary));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
                     Thread.sleep(2500);
@@ -328,11 +330,7 @@ public class SplashScreen extends AppCompatActivity implements View.OnClickListe
                             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                                     LinearLayout.LayoutParams.MATCH_PARENT,
                                     LinearLayout.LayoutParams.WRAP_CONTENT);
-                            containerS = new LinearContainer(SplashScreen.this);
-                            containerS.setLayoutParams(params);
-                            containerS.setId(R.id.contenedorS);
-                            //containerS.setOnTouchListener(SplashScreen.this);
-                            container.addView(containerS);
+
                             new Thread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -343,7 +341,7 @@ public class SplashScreen extends AppCompatActivity implements View.OnClickListe
                                         public void run() {
 
                                             transaction = manager.beginTransaction();
-                                            transaction.add(containerS.getId(),tabFragment.get(fragmentPos));
+                                            transaction.add(container.getId(),tabFragment.get(fragmentPos));
                                             transaction.commitNow();
 
                                         }
@@ -357,16 +355,16 @@ public class SplashScreen extends AppCompatActivity implements View.OnClickListe
 
                                     if (tab == tabs.getTabAt(0)){
                                         fragmentPos = chFragment(tabFragment,fragmentPos,
-                                                containerS,manager,0);
+                                                container,manager,0);
 
                                     }
                                     else if (tab == tabs.getTabAt(1)){
                                         fragmentPos = chFragment(tabFragment,fragmentPos,
-                                                containerS,manager,1);
+                                                container,manager,1);
 
                                     }else if (tab == tabs.getTabAt(2)){
                                         fragmentPos = chFragment(tabFragment,fragmentPos,
-                                                containerS,manager,2);
+                                                container,manager,2);
 
                                     }
                                 }
@@ -381,7 +379,7 @@ public class SplashScreen extends AppCompatActivity implements View.OnClickListe
 
                                 }
                             });
-                            containerS.removeAllViews();
+                            container.removeAllViews();
 
 
 
@@ -400,14 +398,14 @@ public class SplashScreen extends AppCompatActivity implements View.OnClickListe
         try {
             if (tabs.getTabAt(0).isSelected()){
                 fragmentPos = chFragment(tabFragment,fragmentPos,
-                        containerS,manager,0);
+                        container,manager,0);
             }
             else if (tabs.getTabAt(1).isSelected()){
                 fragmentPos = chFragment(tabFragment,fragmentPos,
-                        containerS,manager,0);
+                        container,manager,0);
             }else if (tabs.getTabAt(2).isSelected()){
                 fragmentPos = chFragment(tabFragment,fragmentPos,
-                        containerS,manager,0);
+                        container,manager,0);
             }
         }catch (Exception e){
             e.printStackTrace();
