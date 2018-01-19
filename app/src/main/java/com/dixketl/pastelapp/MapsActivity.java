@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
@@ -56,6 +57,8 @@ public class MapsActivity extends AppCompatActivity
 
     private LocationManager lm;
     private String provider;
+
+    private LatLng ll;
 
     /**
      * Request code for location permission request.
@@ -195,6 +198,20 @@ public class MapsActivity extends AppCompatActivity
 
         mMap.setBuildingsEnabled(true);
 
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                mMap.clear();
+                MarkerOptions mOp= new MarkerOptions().position(latLng)
+                        .title(Double.toString(latLng.latitude)
+                                +","+
+                                Double.toString(latLng.longitude))
+                        .draggable(true);
+                mark.remove();
+                mark = mMap.addMarker(mOp);
+            }
+        });
+
 
     }
     /**
@@ -230,16 +247,20 @@ public class MapsActivity extends AppCompatActivity
             try {
                 // Getting Current Location From GPS
                 Location location = lm.getLastKnownLocation(provider);
+
                 if(location!=null){
+                    ll = new LatLng(location.getLatitude(),location.getLongitude());
                     onLocationChanged(location);
                 }
-
-                lm.requestLocationUpdates(provider, 20000, 0, this);
+                lm.requestLocationUpdates(provider, 6000, 0, this);
+                mark = mMap.addMarker(new MarkerOptions().position(ll)
+                        .title(Double.toString(ll.latitude)+","+Double.toString(ll.longitude)).snippet(myPlace.getAddress().toString())
+                        .draggable(true));
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            onMyLocationButtonClick();
+
 
         }
     }
@@ -248,8 +269,9 @@ public class MapsActivity extends AppCompatActivity
     public boolean onMyLocationButtonClick() {
         mMap.clear();
 
-        LatLng myLatLang = new LatLng(Latitud,Longitud);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(myLatLang));
+
+        ll= new LatLng(Latitud,Longitud);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(ll));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(15),1500,this);
 
 
@@ -265,6 +287,7 @@ public class MapsActivity extends AppCompatActivity
                        if (task.isSuccessful() && task.getResult() != null) {
                            PlaceLikelihoodBufferResponse likelyPlaces = task.getResult();
                            for (PlaceLikelihood placeLikelihood : likelyPlaces) {
+                               //if (placeLikelihood.getPlace().getLatLng().latitude)
                                myPlace = placeLikelihood.getPlace();
                            }
                            mark = mMap.addMarker(new MarkerOptions().position(myPlace.getLatLng())
@@ -281,7 +304,6 @@ public class MapsActivity extends AppCompatActivity
            }catch (Exception e){
                e.printStackTrace();
            }
-
         }
         return false;
     }
@@ -344,20 +366,18 @@ public class MapsActivity extends AppCompatActivity
     @Override
     public void onMarkerDrag(Marker marker) {
 
+
+        marker.setTitle(Double.toString(marker.getPosition().latitude)
+                +","+
+                Double.toString(marker.getPosition().longitude));
     }
 
     @Override
     public void onMarkerDragEnd(Marker marker) {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            //Todo
-            mark = mMap.addMarker(new MarkerOptions().position(myPlace.getLatLng())
-                    .title(myPlace.getName().toString()).snippet(myPlace.getAddress().toString())
-                    .draggable(true));
+        autocompleteFragment.setText(Double.toString(marker.getPosition().latitude)
+                +","+
+                Double.toString(marker.getPosition().longitude));
 
-
-        }
     }
 
     //Para manejar las falla de conexión del API de Google places
@@ -429,6 +449,7 @@ public class MapsActivity extends AppCompatActivity
                 == PackageManager.PERMISSION_GRANTED) {
             try {
                 lm.requestLocationUpdates(provider, 20000, 0, this);
+                ll = new LatLng(Latitud,Longitud);
             }catch (Exception e){
                 e.printStackTrace();
             }
